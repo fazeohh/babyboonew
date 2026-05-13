@@ -4,7 +4,7 @@ const lightbox = document.getElementById("gallery-lightbox");
 const lightboxImage = document.getElementById("lightbox-image");
 const lightboxClose = document.getElementById("lightbox-close");
 const galleryGrid = document.getElementById("gallery-grid");
-const galleryPageButtons = document.querySelectorAll(".gallery-page-button");
+const galleryToolbar = document.getElementById("gallery-toolbar");
 
 const galleryItems = [
   { src: "assets/collection-1.jpeg", alt: "Baby Boo essentials set with blanket and mittens", shape: "tall" },
@@ -56,7 +56,8 @@ const galleryItems = [
   { src: "assets/gallery-47.jpeg", alt: "Baby Boo personalized baptism keepsake set", shape: "wide" }
 ];
 
-const itemsPerPage = Math.ceil(galleryItems.length / 2);
+const itemsPerPage = 12;
+const totalPages = Math.ceil(galleryItems.length / itemsPerPage);
 let activePage = 1;
 
 const closeLightbox = () => {
@@ -93,15 +94,28 @@ const renderGalleryPage = (page) => {
     .join("");
 };
 
+const renderGalleryButtons = () => {
+  galleryToolbar.innerHTML = Array.from({ length: totalPages }, (_, index) => {
+    const page = index + 1;
+    const activeClass = page === activePage ? " is-active" : "";
+
+    return `<button class="gallery-page-button${activeClass}" type="button" data-page="${page}">Page ${page}</button>`;
+  }).join("");
+};
+
+renderGalleryButtons();
 renderGalleryPage(activePage);
 
-galleryPageButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    activePage = Number(button.dataset.page);
-    galleryPageButtons.forEach((item) => item.classList.remove("is-active"));
-    button.classList.add("is-active");
-    renderGalleryPage(activePage);
-  });
+galleryToolbar.addEventListener("click", (event) => {
+  const button = event.target.closest(".gallery-page-button");
+
+  if (!button) {
+    return;
+  }
+
+  activePage = Number(button.dataset.page);
+  renderGalleryButtons();
+  renderGalleryPage(activePage);
 });
 
 galleryGrid.addEventListener("click", (event) => {
