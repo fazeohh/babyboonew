@@ -22,7 +22,7 @@ const galleryItems = [
   { src: "assets/gallery-13.jpeg", alt: "Pintuck back open kettuduppu" },
   { src: "assets/gallery-14.jpeg", alt: "Baby Boo floral lace baby set with mittens and bloomers" },
   { src: "assets/gallery-15.jpeg", alt: "Baby Boo embroidered mitten collection" },
-  { src: "assets/gallery-16.jpeg", alt: " White frock set" },
+  { src: "assets/gallery-16.jpeg", alt: "White frock set" },
   { src: "assets/gallery-17.jpeg", alt: "Shoulder tie frock with bell embroidery" },
   { src: "assets/gallery-18.jpeg", alt: "Printed side opening kettuduppu" },
   { src: "assets/gallery-19.jpeg", alt: "Blue muslin frock" },
@@ -34,15 +34,15 @@ const galleryItems = [
   { src: "assets/gallery-25.jpeg", alt: "Multi-design embroidered baby kettuduppu" },
   { src: "assets/gallery-26.jpeg", alt: "Baby Boo custom named babywear set" },
   { src: "assets/gallery-27.jpeg", alt: "Multi-design embroidered baby kettuduppu" },
-  { src: "assets/gallery-28.jpeg", alt: "Side opening kettupuppu with pockets" },
+  { src: "assets/gallery-28.jpeg", alt: "Side opening kettuduppu with pockets" },
   { src: "assets/gallery-29.jpeg", alt: "Baby Boo personalized white cot sheet with blue embroidery", shape: "wide" },
   { src: "assets/gallery-30.jpeg", alt: "Baby Boo yellow floral cot sheet set" },
   { src: "assets/gallery-31.jpeg", alt: "Baby Boo faith-inspired embroidered babywear" },
   { src: "assets/gallery-32.jpeg", alt: "Noolukettu dress set with headband and bloomers" },
   { src: "assets/gallery-33.jpeg", alt: "Shoulder tie frock with cot sheet" },
   { src: "assets/gallery-34.jpeg", alt: "Side Open Kettuduppu with hand embroidery" },
-  { src: "assets/gallery-36.jpeg", alt: "Combo set(kettuduppu,wrap towel,bath towel" },
-  { src: "assets/gallery-37.jpeg", alt: "Baby Boo frilled Bloomers" },
+  { src: "assets/gallery-36.jpeg", alt: "Combo set: kettuduppu, wrap towel, bath towel" },
+  { src: "assets/gallery-37.jpeg", alt: "Baby Boo frilled bloomers" },
   { src: "assets/gallery-38.jpeg", alt: "Baby Boo lotus embroidered noolukettu bloomer set" },
   { src: "assets/gallery-39.jpeg", alt: "Baby Boo floral baby set with mittens and bloomers" },
   { src: "assets/gallery-40.jpeg", alt: "Baby Boo floral embroidered set with mittens and bloomers" },
@@ -98,3 +98,53 @@ const renderGalleryPage = (page) => {
 };
 
 const renderGalleryButtons = () => {
+  galleryToolbar.innerHTML = Array.from({ length: totalPages }, (_, index) => {
+    const page = index + 1;
+    const activeClass = page === activePage ? " is-active" : "";
+
+    return `<button class="gallery-page-button${activeClass}" type="button" data-page="${page}">Page ${page}</button>`;
+  }).join("");
+};
+
+renderGalleryButtons();
+renderGalleryPage(activePage);
+
+galleryToolbar.addEventListener("click", (event) => {
+  const button = event.target.closest(".gallery-page-button");
+
+  if (!button) {
+    return;
+  }
+
+  activePage = Number(button.dataset.page);
+  renderGalleryButtons();
+  renderGalleryPage(activePage);
+});
+
+galleryGrid.addEventListener("click", (event) => {
+  const button = event.target.closest(".gallery-button");
+
+  if (!button) {
+    return;
+  }
+
+  lightboxImage.src = button.dataset.image;
+  lightboxImage.alt = button.dataset.alt;
+  lightbox.classList.add("is-open");
+  lightbox.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+});
+
+lightboxClose.addEventListener("click", closeLightbox);
+
+lightbox.addEventListener("click", (event) => {
+  if (event.target === lightbox) {
+    closeLightbox();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+    closeLightbox();
+  }
+});
